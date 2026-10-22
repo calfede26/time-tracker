@@ -3,7 +3,7 @@
 > Ogni AI che modifica il progetto DEVE aggiornare questo file a fine lavoro.
 > Descrivi lo stato reale del codice, non quello pianificato. Se una sezione non esiste ancora, lasciala "Non ancora implementato".
 
-Ultimo aggiornamento: 2026-10-22 da Antigravity. Implementati tipi TypeScript di dominio e funzione condivisa calculateEntryDuration (livello dati).
+Ultimo aggiornamento: 2026-10-22 da Antigravity. Creata l'App shell minimale con BottomNav fedele alle schermate approvate in design/ (Home, Progetti, Report con sole icone SVG inline).
 
 ## 1. Struttura delle cartelle
 
@@ -13,6 +13,7 @@ time-tracker/
 ├── SPEC.md                    # Specifiche funzionali (fonte di verità)
 ├── ARCHITECTURE.md            # Questo file (stato reale del codice)
 ├── CHANGELOG.md               # Registro delle sessioni
+├── design/                    # Schermate approvate di riferimento
 ├── design-tokens.json         # Unici valori di stile consentiti (bloccati)
 ├── package.json               # Dipendenze e script npm
 ├── tsconfig.json              # Configurazione TypeScript (strict attivo)
@@ -22,17 +23,18 @@ time-tracker/
 │   └── generate-theme.js      # Genera src/theme.generated.css da design-tokens.json
 └── src/
     ├── main.tsx               # Punto di ingresso React (monta App nel DOM)
-    ├── App.tsx                # Componente radice (pagina di prova)
+    ├── App.tsx                # App shell minima: stato scheda attiva e layout viewport
     ├── index.css              # Stili globali: importa Tailwind, tema e font Inter
     ├── theme.generated.css    # ⚙ Generato automaticamente, non versionato (.gitignore)
     ├── vite-env.d.ts          # Dichiarazioni di tipo per Vite
-    ├── components/            # Componenti UI riutilizzabili (vuoto)
+    ├── components/            # Componenti UI riutilizzabili
+    │   └── BottomNav.tsx      # Barra inferiore a 3 icone (Home, Progetti, Report)
     ├── data/                  # Livello dati: tipi, durate, accesso DB (separato dalla UI)
     │   ├── types.ts           # Tipi di dominio (Project, TimeEntry, PomodoroSettings, TimerMode)
     │   ├── duration.ts        # Funzione unica per il calcolo delle durate (calculateEntryDuration)
     │   └── index.ts           # Barrel export del modulo dati
-    ├── pages/                 # Schermate: Home, Progetti, Report (vuoto)
-    └── utils/                 # Utilità condivise: formattazione, costanti (vuoto)
+    ├── pages/                 # Schermate (non ancora implementate: vedi task futuri)
+    └── utils/                 # Utilità condivise (vuoto)
 ```
 
 ### Convenzioni
@@ -54,8 +56,9 @@ Per ogni modulo: cosa fa, da chi viene usato, cosa usa.
 |---|---|---|---|
 | `scripts/generate-theme.js` | Legge `design-tokens.json` e genera il CSS del tema Tailwind | `design-tokens.json` | npm scripts (`dev`, `build`) |
 | `src/main.tsx` | Monta il componente radice React nel DOM | `App.tsx`, `index.css` | `index.html` |
-| `src/App.tsx` | Componente radice, per ora pagina di prova | — | `main.tsx` |
+| `src/App.tsx` | App shell: gestisce lo stato della pagina attiva ('home', 'projects', 'reports') e il layout | `BottomNav`, `index.css` | `main.tsx` |
 | `src/index.css` | Importa Tailwind, tema generato e font Inter | `theme.generated.css`, `@fontsource/inter` | `main.tsx` |
+| `src/components/BottomNav.tsx` | Barra di navigazione a 3 icone inline (Home, Progetti, Report) fedele a `design/` | `design-tokens.json` (classi Tailwind) | `App.tsx` |
 | `src/data/types.ts` | Definizioni di tipo TypeScript per il modello dati (strict) | — | `duration.ts`, componenti UI |
 | `src/data/duration.ts` | Calcolo unificato durata voci (`calculateEntryDuration`) | `types.ts` | Lista recente (Home), Report |
 
@@ -65,10 +68,11 @@ Non ancora implementato.
 
 ## 4. Schermate e collegamenti
 Per ogni schermata: da dove si raggiunge, quali dati mostra, quali azioni può fare.
-- Home: non ancora implementato
-- Timer (libero, pomodoro, manuale): non ancora implementato
-- Progetti: non ancora implementato
-- Report: non ancora implementato
+- Stato globale delle schermate gestito in `src/App.tsx` via `useState<PageId>('home')`.
+- Al click sulle icone della `BottomNav` l'interfaccia aggiorna la vista attiva:
+  - **Home**: attiva con prima icona (casetta outline). Mostra lo spazio vuoto con il nome "Home" (contenuto schermata non ancora implementato).
+  - **Progetti**: attiva con seconda icona (cartella outline). Mostra lo spazio vuoto con il nome "Progetti" (contenuto schermata non ancora implementato).
+  - **Report**: attiva con terza icona (grafico a tre barre outline). Mostra lo spazio vuoto con il nome "Report" (contenuto schermata non ancora implementato).
 
 ## 5. Logica del Pomodoro
 Come funziona la macchina a stati (focus, pausa breve, pausa lunga), come si calcola `active_seconds`, cosa succede allo stop.
@@ -99,6 +103,8 @@ Registra qui le scelte non ovvie, così le altre AI non le annullano.
 - **Tema Tailwind generato da script**: i valori di `design-tokens.json` vengono trasformati in un blocco `@theme` di Tailwind v4 dallo script `scripts/generate-theme.js`. Il file generato (`src/theme.generated.css`) non è versionato; viene rigenerato prima di ogni `dev` e `build`. Questo garantisce che `design-tokens.json` resti l'unica fonte di verità, senza duplicazione manuale.
 - **Spaziature indicizzate**: le spaziature del token `space` (array) diventano `--spacing-0` a `--spacing-12` (indice, non valore), perché Tailwind v4 usa indici per le classi `p-*`, `m-*`, ecc. Mappa: `p-0` = 2px, `p-1` = 3px, `p-2` = 4px, `p-3` = 6px, `p-4` = 8px, `p-5` = 10px, `p-6` = 12px, `p-7` = 14px, `p-8` = 16px, `p-9` = 18px, `p-10` = 20px, `p-11` = 24px, `p-12` = 32px.
 - **Dimensioni componenti come custom properties**: i valori `size` dei token (touchMin, navBar, ringTimer, ecc.) sono esposti come `--size-*` nel tema ma NON come classi dirette di spaziatura. Si usano con valori arbitrari di Tailwind: `w-[var(--size-ring-timer)]`.
+- **BottomNav fedele alle schermate design/**: replicata con 3 icone SVG inline con contorno lineare morbido e angoli arrotondati, altezza barra `size.navBar` (48px) più `env(safe-area-inset-bottom, 0px)`, touch target minimo `size.touchMin` (44px) per ogni icona, colore attivo `text` e inattivo `textMuted`. Nessuna scritta o bordo marcato.
+- **Navigazione minima gestita con lo stato React**: nessun router esterno introdotto; il cambio vista agisce sullo stato locale in `App.tsx` che mostra il nome della pagina attiva e la barra ancorata in basso.
 
 ## 9. Problemi noti / da fare
 - (vuoto)
