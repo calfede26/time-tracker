@@ -50,7 +50,7 @@ Il sito desktop è l'ambiente principale di sviluppo; il mobile deriva da quello
 - Layout responsive: stesso codice per mobile e desktop.
 
 ## Regole di logica
-- La durata di una voce si calcola come da `SPEC.md` (Pomodoro: `active_seconds`; altrimenti `end_at - start_at`). Una sola funzione condivisa per questo calcolo, mai duplicata.
+- La durata di una voce si calcola come da `SPEC.md`: se `active_seconds` è presente si usa quello (Pomodoro sempre, Libero solo se c'è stata una pausa), altrimenti `end_at - start_at`. Una sola funzione condivisa per questo calcolo, mai duplicata.
 - I report derivano sempre da `time_entries`; non salvare totali già calcolati.
 - Un solo timer attivo alla volta.
 - Tutta la logica di accesso ai dati sta in un solo livello dedicato, non sparsa nei componenti UI.
