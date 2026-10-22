@@ -7,6 +7,7 @@ Leggi questo file PRIMA di fare qualsiasi cosa. Poi leggi `SPEC.md` e `ARCHITECT
 - `ARCHITECTURE.md`: come funziona l'app oggi. Va aggiornato ad ogni modifica (vedi sotto).
 - `design-tokens`: unici valori di colori, font, spaziature, raggi, ombre consentiti. Li crea la prima AI nella fase di design; dopo l'approvazione dell'utente sono bloccati e si modificano solo su richiesta esplicita.
 - `CHANGELOG.md`: registro breve di cosa ha fatto ogni sessione.
+- `design/`: schermate approvate dall'utente (Home, Pomodoro, Manuale, Progetti, Report). Sono il riferimento visivo: vanno replicate fedelmente, usando solo `design-tokens.json`.
 
 ## Flusso di lavoro (obbligatorio)
 1. Leggi `AGENTS.md`, `SPEC.md`, `ARCHITECTURE.md` e le ultime righe di `CHANGELOG.md`.
