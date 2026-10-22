@@ -1,0 +1,23 @@
+{
+  "_nota": "Approvato dall'utente il 2026-10-21 (direzione Slate). Unici valori di stile consentiti nell'app (AGENTS.md); si modificano solo su richiesta esplicita. Tema SOLO scuro. Font Inter self-hosted (@fontsource/inter).",
+  "color": {
+    "background": "#131314",
+    "surface": "#1C1C1E",
+    "surfaceRaised": "#2C2C30",
+    "text": "#EDEDF0",
+    "textMuted": "#9A9AA3",
+    "onAccent": "#131314",
+    "mode": { "free": "#7DD3C0", "pomodoro": "#F4A98B", "manual": "#A9B8F5" },
+    "state": { "paused": "#F2D184", "error": "#F08A8A" },
+    "projectPalette": ["#8FD0EA", "#D9E58A", "#E9A8D2", "#C9A7F0", "#8FE0A8"]
+  },
+  "font": {
+    "family": "Inter",
+    "weight": { "regular": 400, "medium": 500, "semibold": 600, "bold": 700 },
+    "size": { "2xs": 11, "xs": 12, "sm": 13, "base": 14, "md": 15, "lg": 16, "xl": 24, "2xl": 28, "3xl": 36, "4xl": 40, "5xl": 44, "6xl": 56 }
+  },
+  "space": [2, 3, 4, 6, 8, 10, 12, 14, 16, 18, 20, 24, 32],
+  "radius": { "2xs": 3, "xs": 4, "sm": 12, "md": 16, "lg": 24, "xl": 28, "full": 9999 },
+  "size": { "touchMin": 44, "navBar": 48, "button": 52, "pauseButton": 56, "stopButton": 64, "ringTimer": 220, "ringStroke": 12, "timerZone": 404, "chartHeight": 180 },
+  "shadow": { "none": "none" }
+}

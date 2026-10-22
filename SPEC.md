@@ -18,9 +18,10 @@ Mobile (APK Android via Capacitor) + sito desktop, stesso codice, dati sincroniz
   - le voci create da Pomodoro hanno un'icona che le distingue
   - tap su una voce: modifica o riavvia
 - Opzionale: riepilogo "oggi" con le ore totali
+- "Attività recente" sta sotto un divisore con una piccola freccia: un tocco la espande verso l'alto, fino a coprire la parte del timer
 
 ### 2. Timer: tre modalità
-- **Libero**: tasto start/stop
+- **Libero**: start, pausa e stop
 - **Pomodoro**: vedi regole sotto
 - **Manuale**: inserimento ora di inizio e ora di fine
 - Ogni timer richiede un progetto; la descrizione è facoltativa
@@ -30,8 +31,8 @@ Mobile (APK Android via Capacitor) + sito desktop, stesso codice, dati sincroniz
 - Sotto-progetti (un livello di annidamento: `parent_id`)
 
 ### 4. Report
-- Vista mensile: giorni in cui è stato tracciato un progetto
-- Ore totali e grafici (per progetto, per giorno)
+- Vista mensile: grafico a barre con le ore di ogni giorno, impilate per progetto
+- Ore totali del mese e ore per progetto
 
 ## Regole Pomodoro
 - Impostazioni: durata focus, pausa breve, pausa lunga, ogni quanti cicli arriva la pausa lunga, suono a inizio e fine intervallo
@@ -54,7 +55,7 @@ Mobile (APK Android via Capacitor) + sito desktop, stesso codice, dati sincroniz
 - `start_at`
 - `end_at` (vuoto = timer in corso)
 - `mode` (`free` | `pomodoro` | `manual`)
-- `active_seconds` (solo Pomodoro: secondi di focus; per le altre modalità vuoto, durata = `end_at - start_at`)
+- `active_seconds` (Pomodoro: secondi di focus; Libero: secondi senza pause, solo se il timer è stato messo in pausa; altrimenti vuoto)
 
 **pomodoro_settings** (una riga)
 - `focus_min`, `short_break_min`, `long_break_min`
@@ -62,7 +63,7 @@ Mobile (APK Android via Capacitor) + sito desktop, stesso codice, dati sincroniz
 - `sound_start`, `sound_end`
 
 ## Regola durata (per lista e report)
-- `mode = pomodoro` → `active_seconds`
+- se `active_seconds` è presente → `active_seconds` (sempre per Pomodoro)
 - altrimenti → `end_at - start_at`
 
 ## Fuori dalla v1
