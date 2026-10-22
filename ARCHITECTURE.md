@@ -3,7 +3,7 @@
 > Ogni AI che modifica il progetto DEVE aggiornare questo file a fine lavoro.
 > Descrivi lo stato reale del codice, non quello pianificato. Se una sezione non esiste ancora, lasciala "Non ancora implementato".
 
-Ultimo aggiornamento: 2026-10-22 da Antigravity. Scheletro del progetto creato (Vite + React + TypeScript + Tailwind + Inter).
+Ultimo aggiornamento: 2026-10-22 da Antigravity. Implementati tipi TypeScript di dominio e funzione condivisa calculateEntryDuration (livello dati).
 
 ## 1. Struttura delle cartelle
 
@@ -27,7 +27,10 @@ time-tracker/
     ├── theme.generated.css    # ⚙ Generato automaticamente, non versionato (.gitignore)
     ├── vite-env.d.ts          # Dichiarazioni di tipo per Vite
     ├── components/            # Componenti UI riutilizzabili (vuoto)
-    ├── data/                  # Livello dati: accesso a DB, query, logica condivisa (vuoto)
+    ├── data/                  # Livello dati: tipi, durate, accesso DB (separato dalla UI)
+    │   ├── types.ts           # Tipi di dominio (Project, TimeEntry, PomodoroSettings, TimerMode)
+    │   ├── duration.ts        # Funzione unica per il calcolo delle durate (calculateEntryDuration)
+    │   └── index.ts           # Barrel export del modulo dati
     ├── pages/                 # Schermate: Home, Progetti, Report (vuoto)
     └── utils/                 # Utilità condivise: formattazione, costanti (vuoto)
 ```
@@ -53,6 +56,8 @@ Per ogni modulo: cosa fa, da chi viene usato, cosa usa.
 | `src/main.tsx` | Monta il componente radice React nel DOM | `App.tsx`, `index.css` | `index.html` |
 | `src/App.tsx` | Componente radice, per ora pagina di prova | — | `main.tsx` |
 | `src/index.css` | Importa Tailwind, tema generato e font Inter | `theme.generated.css`, `@fontsource/inter` | `main.tsx` |
+| `src/data/types.ts` | Definizioni di tipo TypeScript per il modello dati (strict) | — | `duration.ts`, componenti UI |
+| `src/data/duration.ts` | Calcolo unificato durata voci (`calculateEntryDuration`) | `types.ts` | Lista recente (Home), Report |
 
 ## 3. Flusso dei dati
 Come un'azione dell'utente arriva al database e torna all'interfaccia.
@@ -71,7 +76,12 @@ Non ancora implementato.
 
 ## 6. Calcolo di durate e report
 Dove si trova la funzione condivisa per le durate e come la usano lista recente e report.
-Non ancora implementato.
+- Funzione unica: `calculateEntryDuration(entry: TimeEntry, now?: string): number` in `src/data/duration.ts`.
+- Logica:
+  - Se `entry.active_seconds` è definito (non null/undefined), restituisce `active_seconds` (inclusivo di focus parziale in Pomodoro o tempo effettivo netto nel Libero).
+  - Altrimenti calcola la differenza in secondi tra `end_at` e `start_at` (o rispetto a `now`/istante corrente se il timer è attivo).
+  - Restituisce sempre un numero intero di secondi non negativo (`Math.max(0, ...)`).
+- Tutte le schermate (lista recente in Home e aggregazioni in Report) devono importare e usare esclusivamente questa funzione, senza calcolare durate localmente.
 
 ## 7. Sincronizzazione e login
 Come funzionano Supabase, il login e la sincronizzazione tra telefono e PC.
