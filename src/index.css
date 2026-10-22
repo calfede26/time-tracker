@@ -1,0 +1,30 @@
+/*
+ * Foglio di stile principale dell'app.
+ * Importa Tailwind v4, il tema generato dai design tokens,
+ * e il font Inter (self-hosted via @fontsource/inter).
+ *
+ * Collegamento: design-tokens.json → theme.generated.css → qui → tutta l'app
+ */
+
+/* Tailwind v4 — importa il core */
+@import "tailwindcss";
+
+/* Tema personalizzato generato da design-tokens.json (sostituisce i default di Tailwind) */
+@import "./theme.generated.css";
+
+/* Inter: solo i pesi necessari (400, 500, 600, 700), self-hosted per funzionare offline */
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+@import "@fontsource/inter/700.css";
+
+/*
+ * Reset di base: sfondo scuro, testo chiaro, font Inter su tutta l'app.
+ * Usa i colori dai design tokens esposti come variabili CSS dal tema Tailwind.
+ */
+@layer base {
+  html {
+    background-color: var(--color-background);
+    color: var(--color-text);
+  }
+}

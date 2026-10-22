@@ -3,17 +3,56 @@
 > Ogni AI che modifica il progetto DEVE aggiornare questo file a fine lavoro.
 > Descrivi lo stato reale del codice, non quello pianificato. Se una sezione non esiste ancora, lasciala "Non ancora implementato".
 
-Ultimo aggiornamento: 2026-10-21 da Claude (chat). Nessun codice ancora: solo fase di design completata.
+Ultimo aggiornamento: 2026-10-22 da Antigravity. Scheletro del progetto creato (Vite + React + TypeScript + Tailwind + Inter).
 
 ## 1. Struttura delle cartelle
-Non ancora implementato.
+
+```
+time-tracker/
+├── AGENTS.md                  # Regole per tutte le AI
+├── SPEC.md                    # Specifiche funzionali (fonte di verità)
+├── ARCHITECTURE.md            # Questo file (stato reale del codice)
+├── CHANGELOG.md               # Registro delle sessioni
+├── design-tokens.json         # Unici valori di stile consentiti (bloccati)
+├── package.json               # Dipendenze e script npm
+├── tsconfig.json              # Configurazione TypeScript (strict attivo)
+├── vite.config.ts             # Configurazione Vite (React + Tailwind + alias @/)
+├── index.html                 # Entry point HTML (viewport-fit=cover)
+├── scripts/
+│   └── generate-theme.js      # Genera src/theme.generated.css da design-tokens.json
+└── src/
+    ├── main.tsx               # Punto di ingresso React (monta App nel DOM)
+    ├── App.tsx                # Componente radice (pagina di prova)
+    ├── index.css              # Stili globali: importa Tailwind, tema e font Inter
+    ├── theme.generated.css    # ⚙ Generato automaticamente, non versionato (.gitignore)
+    ├── vite-env.d.ts          # Dichiarazioni di tipo per Vite
+    ├── components/            # Componenti UI riutilizzabili (vuoto)
+    ├── data/                  # Livello dati: accesso a DB, query, logica condivisa (vuoto)
+    ├── pages/                 # Schermate: Home, Progetti, Report (vuoto)
+    └── utils/                 # Utilità condivise: formattazione, costanti (vuoto)
+```
+
+### Convenzioni
+- **`components/`**: componenti UI usati in più schermate (bottoni, card, timer, navbar). Un file per componente.
+- **`data/`**: tutta la logica di accesso ai dati, separata dall'interfaccia (regola AGENTS.md). Nessun componente UI accede direttamente al database.
+- **`pages/`**: ogni schermata ha una sotto-cartella (es. `pages/home/`). Componenti usati solo in una schermata stanno nella sua sotto-cartella.
+- **`utils/`**: funzioni pure e costanti condivise (es. calcolo durata, formattazione orari).
+- **`theme.generated.css`**: file generato dallo script `scripts/generate-theme.js`, NON versionato. Viene rigenerato automaticamente prima di `dev` e `build`.
+
+### Flusso dei design tokens
+`design-tokens.json` → `scripts/generate-theme.js` → `src/theme.generated.css` (blocco `@theme` Tailwind v4) → classi Tailwind usabili in tutta l'app.
+
+I valori predefiniti di Tailwind vengono **sostituiti** (non estesi) dal blocco `@theme`, quindi non si possono usare colori, spaziature, raggi o ombre inventati. L'unica famiglia di font disponibile è Inter.
 
 ## 2. Moduli principali
 Per ogni modulo: cosa fa, da chi viene usato, cosa usa.
 
 | Modulo | Cosa fa | Usa | Usato da |
 |---|---|---|---|
-| (esempio) `timerService` | Avvia/ferma i timer e crea le voci | livello dati | Home, Timer |
+| `scripts/generate-theme.js` | Legge `design-tokens.json` e genera il CSS del tema Tailwind | `design-tokens.json` | npm scripts (`dev`, `build`) |
+| `src/main.tsx` | Monta il componente radice React nel DOM | `App.tsx`, `index.css` | `index.html` |
+| `src/App.tsx` | Componente radice, per ora pagina di prova | — | `main.tsx` |
+| `src/index.css` | Importa Tailwind, tema generato e font Inter | `theme.generated.css`, `@fontsource/inter` | `main.tsx` |
 
 ## 3. Flusso dei dati
 Come un'azione dell'utente arriva al database e torna all'interfaccia.
@@ -47,6 +86,9 @@ Registra qui le scelte non ovvie, così le altre AI non le annullano.
 - Nelle tre schermate timer cambia solo la parte alta (altezza fissa `timerZone`); "Attività recente" resta sempre nella stessa posizione sotto il divisore espandibile.
 - Simboli del ciclo Pomodoro: cerchio = focus, quadrato = pausa breve, stella = pausa lunga.
 - Progetti: linee ad albero per mostrare i sotto-progetti. Report: barre per giorno impilate per progetto (nessun calendario).
+- **Tema Tailwind generato da script**: i valori di `design-tokens.json` vengono trasformati in un blocco `@theme` di Tailwind v4 dallo script `scripts/generate-theme.js`. Il file generato (`src/theme.generated.css`) non è versionato; viene rigenerato prima di ogni `dev` e `build`. Questo garantisce che `design-tokens.json` resti l'unica fonte di verità, senza duplicazione manuale.
+- **Spaziature indicizzate**: le spaziature del token `space` (array) diventano `--spacing-0` a `--spacing-12` (indice, non valore), perché Tailwind v4 usa indici per le classi `p-*`, `m-*`, ecc. Mappa: `p-0` = 2px, `p-1` = 3px, `p-2` = 4px, `p-3` = 6px, `p-4` = 8px, `p-5` = 10px, `p-6` = 12px, `p-7` = 14px, `p-8` = 16px, `p-9` = 18px, `p-10` = 20px, `p-11` = 24px, `p-12` = 32px.
+- **Dimensioni componenti come custom properties**: i valori `size` dei token (touchMin, navBar, ringTimer, ecc.) sono esposti come `--size-*` nel tema ma NON come classi dirette di spaziatura. Si usano con valori arbitrari di Tailwind: `w-[var(--size-ring-timer)]`.
 
 ## 9. Problemi noti / da fare
 - (vuoto)
