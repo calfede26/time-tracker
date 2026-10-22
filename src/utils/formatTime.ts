@@ -26,3 +26,16 @@ export function formatTimerDisplay(totalSeconds: number): string {
   const remainingMinutes = Math.floor((safeSeconds % 3600) / 60);
   return `${String(hours).padStart(2, '0')}:${String(remainingMinutes).padStart(2, '0')}`;
 }
+
+/**
+ * Formatta una durata totale in secondi nel formato "h:mm" utilizzato nell'elenco
+ * dell'attività recente e nei riepiloghi (es. 4320s -> "1:12", 3000s -> "0:50").
+ * @param totalSeconds Secondi totali calcolati da calculateEntryDuration
+ * @returns Stringa formattata "h:mm"
+ */
+export function formatDurationHoursMinutes(totalSeconds: number): string {
+  const safeSeconds = Math.max(0, Math.floor(totalSeconds));
+  const hours = Math.floor(safeSeconds / 3600);
+  const minutes = Math.floor((safeSeconds % 3600) / 60);
+  return `${hours}:${String(minutes).padStart(2, '0')}`;
+}
