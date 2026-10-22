@@ -3,22 +3,22 @@
  * Ospita il layout minimo con l'area centrale dei contenuti e la barra di navigazione inferiore.
  *
  * Specifiche dello scope:
- * - Cambio schermata gestito unicamente tramite stato locale di React (senza routing esterno).
- * - Spazio centrale che visualizza esclusivamente il nome della pagina attiva ("Home", "Progetti", "Report").
- * - La vecchia pagina di prova iniziale è stata sostituita da questo layout.
- * - Margine safe-area in alto (safe-area-inset-top) per non finire sotto la barra di stato del telefono.
+ * - Navigazione gestita tramite stato locale di React (senza librerie esterne).
+ * - Quando la scheda attiva è 'home', renderizza HomePage con la Zona Timer e il divisore.
+ * - Per le altre schede ('projects', 'reports'), mostra lo spazio con il nome della schermata.
+ * - Margine safe-area in alto (safe-area-inset-top) per non sovrapporsi alla barra di sistema.
  *
  * Collegamento: montato da src/main.tsx nel DOM (#root).
  */
 
 import { useState } from 'react';
 import { BottomNav, type PageId } from './components/BottomNav';
+import { HomePage } from './pages/HomePage';
 
 /**
- * Mappa i titoli testuali delle tre pagine abilitate.
+ * Titoli testuali delle schermate non ancora implementate.
  */
-const PAGE_TITLES: Record<PageId, string> = {
-  home: 'Home',
+const PLACEHOLDER_TITLES: Partial<Record<PageId, string>> = {
   projects: 'Progetti',
   reports: 'Report',
 };
@@ -32,25 +32,30 @@ export function App() {
       style={{
         /*
          * Applica il margine superiore per la barra di stato del telefono (Android/Capacitor).
-         * Nel browser desktop questo valore vale 0px come da standard.
+         * Nel browser desktop questo valore vale 0px come da standard W3C.
          */
         paddingTop: 'env(safe-area-inset-top, 0px)',
       }}
     >
       {/*
         Contenitore principale centrato:
-        Su viewport mobile (360x780) occupa il 100% della larghezza;
+        Su mobile (360x780) occupa il 100% della larghezza;
         su desktop viene centrato con max-w-md per mantenere proporzioni ergonomiche.
       */}
       <div className="flex-1 flex flex-col w-full max-w-md mx-auto overflow-hidden">
         {/*
           Area centrale della pagina attiva:
-          Per ora contiene solo il nome della schermata corrente in font Inter e colore text.
         */}
-        <main className="flex-1 flex items-center justify-center p-8">
-          <span className="text-xl font-medium text-text">
-            {PAGE_TITLES[activePage]}
-          </span>
+        <main className="flex-1 flex flex-col overflow-hidden">
+          {activePage === 'home' ? (
+            <HomePage />
+          ) : (
+            <div className="flex-1 flex items-center justify-center p-8">
+              <span className="text-xl font-medium text-text">
+                {PLACEHOLDER_TITLES[activePage]}
+              </span>
+            </div>
+          )}
         </main>
 
         {/*
